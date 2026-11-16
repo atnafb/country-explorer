@@ -31,20 +31,27 @@ def display_country(country):
     print(f"Capital: {country['capital']}")
     print(f"Population: {country['population']}")
     print(f"Area: {country['area']}")
-try:
-    countries = fetch_countries(API_URL)
-    clean_countries = transform_countries(countries)
-
-    country_name = input("Enter the name of the country you want to search for: ").strip()
+def main():
+    country_name = input("Enter a country name: ").strip()
 
     if not country_name:
-        print("No country name provided. Exiting.")
-    else:
-        result = find_country(clean_countries, country_name)
-        if result is None:
-            print(f"Country '{country_name}' not found.")
-        else:
-            display_country(result)
-    
-except requests.exceptions.RequestException:
+        print("Please enter a country name.")
+        return
+
+    try:
+        countries = fetch_countries(API_URL)
+    except requests.exceptions.RequestException:
         print("Could not load country data. Please try again later.")
+        return
+
+    clean_countries = transform_countries(countries)
+    result = find_country(clean_countries, country_name)
+
+    if result is None:
+        print(f"Country '{country_name}' not found.")
+    else:
+        display_country(result)
+
+
+if __name__ == "__main__":
+    main()
